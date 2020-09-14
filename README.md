@@ -19,7 +19,7 @@ podman run -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe
 or let the container download the iso for you.
 
 ```
-podman run  -e ISO_URL="http...." -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe 
+podman run -e ISO_URL=http.... -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe 
 ```
 
 under /var/tmp/ai you would find an ipxe directory with all needed files

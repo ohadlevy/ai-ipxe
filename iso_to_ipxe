@@ -15,7 +15,7 @@ else
     exit 1
   else
     echo "Attempting to download ISO from ${ISO_URL}"
-    curl -o $IMAGE $ISO_URL
+    curl -o $IMAGE "$ISO_URL"
   fi
 fi
 
