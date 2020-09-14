@@ -1,4 +1,4 @@
-#! /bin/sh -ex
+#! /bin/sh -e
 
 #check that data directory exists
 if [ ! -d /data ]; then
@@ -8,7 +8,7 @@ fi
 
 #check if image is already available or download it
 if [ -f "$IMAGE" ]; then
-  echo "Using $IMAGE."
+  echo "Using pre-downloaded ISO `basename $IMAGE`."
 else 
   if [ -z $ISO_URL ]; then
     echo "ISO ${IMAGE} wasn't found on local path, and no ISO_URL environment variable specified - aborting"
@@ -21,6 +21,8 @@ fi
 
 mkdir -p $IPXE_DIR
 
+echo Configuring IPXE 
+
 cat > $IPXE_DIR/ipxe << EOF
 #!ipxe                                                                                                                                                                                    
 set live_url ${BASE_URL}
@@ -32,11 +34,11 @@ EOF
 export PXE_IMAGES=`isoinfo -i $IMAGE -f |grep -i images/pxeboot`
 for img in $PXE_IMAGES; do
   export name=`basename ${img,,} | sed 's/\;1//' | sed 's/\.$//'`
+  echo extracting $name
   isoinfo -i $IMAGE -x $img > $IPXE_DIR/$name
- done
+done
  
+echo writing custom user ignition
 echo '{' > $IPXE_DIR/config.ign
 isoinfo -i $IMAGE -x '/IMAGES/IGNITION.IMG;1' | xz -dc - | sed '1d; $d' >> $IPXE_DIR/config.ign
 echo '}' >> $IPXE_DIR/config.ign
-
-#podman run  -v $IPXE_DIR:/app:ro -p 8080:8080 -d --rm bitnami/nginx:latest
