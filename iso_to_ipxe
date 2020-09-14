@@ -2,7 +2,7 @@
 
 #check that data directory exists
 if [ ! -d /data ]; then
-  echo usage: podman -v local_directory:/data
+  echo usage: podman -v local_directory:/data:Z
   exit 1
 fi
 
