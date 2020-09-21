@@ -9,7 +9,7 @@ Make sure you that you have downloaded your ISO or have a *valid* URL for it.
 
 an example usage if you have downloaded the image already:
 
-this assumes that your image is located under /var/tmp/ipxe and its called image.iso
+this assumes that your image is located under /var/tmp/ai and its called image.iso
 
 ```
 podman run -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe 
@@ -19,7 +19,10 @@ podman run -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe
 or let the container download the iso for you.
 
 ```
-podman run -e ISO_URL=http.... -v /var/tmp/ai:/data:Z -it --rm quay.io/ohadlevy/ai-ipxe 
+# ISO_URL is where the Assisted Installer ISO for your cluster is located
+# BASE_URL is where your iPXE files will be hosted
+
+podman run -e BASE_URL=$(hostname):8080 -e ISO_URL=http.... -v /var/tmp/ai:/data:Z --net=host -it --rm quay.io/ohadlevy/ai-ipxe 
 ```
 
 under /var/tmp/ai you would find an ipxe directory with all needed files
@@ -35,5 +38,5 @@ you would either need to adjust the base url in /var/tmp/ai/ipxe/ipxe or to use 
 lastly, you would need to boot ipxe, a simple way to test on a vm, while ipxe is booting, press ctrl-b and type:
 ```
 dhcp
-chain <your base url>/ipxe/ipxe
+chain <your base url>/ipxe
 ```
