@@ -39,4 +39,19 @@ for img in $PXE_IMAGES; do
 done
  
 echo writing custom user ignition
-isoinfo -i $IMAGE -x '/IMAGES/IGNITION.IMG;1' | gunzip | sed "s/.*config.ign.*/{/" |sed "s/.*TRAILER.*/}/" >> $IPXE_DIR/config.ign
+
+# Check if ISO is gzipped or xzed
+IGNITION_IMG_TYPE=$(isoinfo -i $IMAGE -x '/IMAGES/IGNITION.IMG;1' | file - | awk '{print $2}')
+
+if [ $IGNITION_IMG_TYPE == "gzip" ]
+then
+  isoinfo -i $IMAGE -x '/IMAGES/IGNITION.IMG;1' | gunzip | sed "s/.*config.ign.*/{/" |sed "s/.*TRAILER.*/}/" > $IPXE_DIR/config.ign
+elif [ $IGNITION_IMG_TYPE == "XZ" ]
+then
+  echo '{' > $IPXE_DIR/config.ign
+  isoinfo -i $IMAGE -x '/IMAGES/IGNITION.IMG;1' | xz -dc - | sed '1d; $d' >> $IPXE_DIR/config.ign
+  echo '}' >> $IPXE_DIR/config.ign
+else
+  echo "Unknown ignition file type"
+  exit 1
+fi
