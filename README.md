@@ -40,3 +40,21 @@ lastly, you would need to boot ipxe, a simple way to test on a vm, while ipxe is
 dhcp
 chain <your base url>/ipxe
 ```
+
+## Use as script
+
+If you cannot run the container, you can run the script directly:
+
+```
+$ BASE_URL=http://webhost.local/ ./iso_to_ipxe path/to/image.iso
+```
+
+These packages are required:
+
+`dnf install -y xz gzip genisoimage file cpio`
+
+or
+
+```
+apt install -y xz-utils gzip genisoimage file cpio
+```
