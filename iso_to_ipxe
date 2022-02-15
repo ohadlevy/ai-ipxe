@@ -1,7 +1,31 @@
 #! /bin/sh -e
 
-#check that data directory exists
-if [ ! -d /data ]; then
+# USAGE: iso_to_pxe path/to/image.iso
+#
+# Creates ipxe files in either $PWD/ipxe or the value passes as IPXE_DIR.
+#
+# set BASE_URL environment variable to the URL from which ipxe files will be served. Required.
+# set ISO_URL if you want the script to download the image and save it to the specified image path. Optional.
+# set IPXE_DIR to specify the directory where ipxe files should be created. Dir is created if necessary. Defaults to "./ipxe".
+
+IMAGE=${IMAGE:-$1}
+
+if [ -z "$IMAGE" ]; then
+  echo "You must provide the image path as the first argument, or set the IMAGE environment variable."
+  echo "usage: $0 path/to/image.iso"
+  exit 1
+fi
+
+IPXE_DIR=${IPXE_DIR:-$PWD/ipxe}
+KERNEL_OPTS=${KERNEL_OPTS:-'random.trust_cpu=on rd.luks.options=discard ignition.firstboot ignition.platform.id=metal console=tty1 console=ttyS1,115200n8 coreos.inst.persistent-kargs="console=tty1 console=ttyS1,115200n8"'}
+
+if [ -z "$BASE_URL" ]; then
+  echo "BASE_URL must be set to the URL from which ipxe files will be served."
+  exit 1
+fi
+
+#check that data directory exists if running in a container
+if [ "$REQUIRE_DATA_DIR" ] && [ ! -d /data ]; then
   echo usage: podman -v local_directory:/data:Z
   exit 1
 fi
