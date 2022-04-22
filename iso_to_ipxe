@@ -50,7 +50,7 @@ echo Configuring IPXE
 cat > $IPXE_DIR/ipxe << EOF
 #!ipxe                                                                                                                                                                                    
 set live_url ${BASE_URL}
-initrd --name main ${live_url}/initrd.img
+initrd --name main \${live_url}/initrd.img
 kernel \${live_url}/vmlinuz initrd=main ignition.config.url=\${live_url}/config.ign coreos.live.rootfs_url=\${live_url}/rootfs.img ${KERNEL_OPTS}
 boot       
 EOF
