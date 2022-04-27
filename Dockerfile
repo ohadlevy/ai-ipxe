@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:latest
+FROM registry.fedoraproject.org/fedora-minimal:34
 
 ENV IMAGE '/data/image.iso'
 ENV IPXE_DIR '/data/ipxe'
